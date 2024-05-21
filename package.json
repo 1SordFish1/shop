@@ -1,9 +1,11 @@
 {
   "name": "shop",
   "version": "0.0.0",
+  "author": "Achuothan M",
+  "description": "shop application for Manga",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --port=8200",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
