@@ -1,0 +1,39 @@
+.spacer {
+  flex: 1 1 auto;
+}
+
+.tool {
+  background: none;
+}
+
+.material-symbols-outlined {
+  font-size: 46px;
+  color: #ffff00;
+}
+
+.hed {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.heading {
+  margin-inline: 10px;
+  font-family: "Rock Salt", cursive;
+  font-weight: 900;
+  font-style: normal;
+}
+
+.container {
+  background: none;
+}
+
+.sidenav {
+  background: none;
+  padding: 20px;
+  width: 360px;
+}
+
+.content {
+  height: 91vh;
+}

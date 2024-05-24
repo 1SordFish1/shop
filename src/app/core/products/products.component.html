@@ -1,0 +1,13 @@
+<div class="product-list">
+  <ng-container *ngIf="products?.length">
+    <div class="product" *ngFor="let item of products">
+      <div class="image-card">
+        <img [src]="imageUrl + item?.image" alt="image">
+      </div>
+      <div class="text">
+        <div class="name">{{item?.name}}</div>
+        <div class="price">$ {{item?.price}}</div>
+      </div>
+    </div>
+  </ng-container>
+</div>

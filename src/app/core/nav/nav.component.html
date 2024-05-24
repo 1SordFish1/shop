@@ -1,0 +1,23 @@
+<div class="nav">
+  <mat-toolbar class="tool">
+    <span class="hed" routerLink="/app/home">
+      <span class="material-symbols-outlined">
+        manga
+      </span>
+      <span class="heading">The Manga Shop</span>
+    </span>
+    <span class="spacer"></span>
+    <button mat-icon-button class="more-icon" (click)="drawer.toggle()">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+  </mat-toolbar>
+
+  <mat-drawer-container class="container" autosize>
+    <mat-drawer #drawer class="sidenav" mode="side" position="end">
+      <a mat-button routerLink="/app/home">Home</a>
+    </mat-drawer>
+    <mat-drawer-content class="content">
+      <router-outlet></router-outlet>
+    </mat-drawer-content>
+  </mat-drawer-container>
+</div>
