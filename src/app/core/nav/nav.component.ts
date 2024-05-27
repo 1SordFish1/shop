@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MatDrawer } from '@angular/material/sidenav';
-import { mergeMap } from 'rxjs';
+import { Subscription, mergeMap } from 'rxjs';
 import { Currency } from 'src/app/shared/models/common.model';
 import { HttpService } from 'src/app/shared/services/http.service';
 @Component({
@@ -9,10 +9,12 @@ import { HttpService } from 'src/app/shared/services/http.service';
   templateUrl: './nav.component.html',
   styleUrl: './nav.component.scss'
 })
-export class NavComponent implements OnInit {
+export class NavComponent implements OnInit, OnDestroy {
   isChecked!: boolean;
   productId!: number;
   currency!: FormControl;
+
+  subscriptionObj = new Subscription();
 
   currencies: Currency[] = [
     { value: 'USD', view: '$ - Doller' },
@@ -26,24 +28,29 @@ export class NavComponent implements OnInit {
   @ViewChild('drawer') drawer!: MatDrawer;
 
   ngOnInit(): void {
-    this.http.openEdit.pipe(mergeMap((res: boolean) => {
-      if(res !== undefined) {
-        if (res) {
-          return this.http.prodId;
-        } else {
-          return [];
+    this.subscriptionObj.add(
+
+      this.http.openEdit.pipe(mergeMap((res: boolean) => {
+        if(res !== undefined) {
+          if (res) {
+            return this.http.prodId;
+          } else {
+            return [];
+          }
         }
-      }
-      return [];
-    })).subscribe((res: number) => {
-      if (res) {
-        this.productId = res;
-        this.drawer.open()
-      }
-    });
-    this.http.currency.subscribe((res: string) => {
-      this.currency = new FormControl(res, [Validators.required]);
-    })
+        return [];
+      })).subscribe((res: number) => {
+        if (res) {
+          this.productId = res;
+          this.drawer.open()
+        }
+      })
+    );
+    this.subscriptionObj.add(
+      this.http.currency.subscribe((res: string) => {
+        this.currency = new FormControl(res, [Validators.required]);
+      })
+    );
   }
 
   currencyChange() {
@@ -68,5 +75,9 @@ export class NavComponent implements OnInit {
       this.isChecked = event?.checked
       this.http.isEdit.next(event?.checked);
     }
+  }
+
+  ngOnDestroy(): void {
+      this.subscriptionObj.unsubscribe();
   }
 }

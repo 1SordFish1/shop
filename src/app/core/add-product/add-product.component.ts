@@ -1,6 +1,6 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { mergeMap } from 'rxjs';
+import { Subscription, mergeMap } from 'rxjs';
 import { Product } from 'src/app/shared/models/common.model';
 import { HttpService } from 'src/app/shared/services/http.service';
 import { SnakService } from 'src/app/shared/services/snak.service';
@@ -11,13 +11,15 @@ import { environment } from 'src/environments/environment.development';
   templateUrl: './add-product.component.html',
   styleUrl: './add-product.component.scss'
 })
-export class AddProductComponent implements OnInit {
+export class AddProductComponent implements OnInit, OnDestroy {
   imageUrl = environment.imageUrl;
   isEditor: boolean = false;
   productForm!: FormGroup;
   productDetail!: Product;
   imageSrc: string = '';
   file!: File;
+
+  subscriptionObj = new Subscription();
 
   constructor(
     private http: HttpService,
@@ -31,38 +33,40 @@ export class AddProductComponent implements OnInit {
   @Input() productId!: number;
 
   ngOnInit(): void {
-    this.http.isEdit.subscribe((res: any) => {
-      if (res !== undefined) {
-        this.isEditor = res;
-        if(res) {
-          this.http.prodId.pipe(mergeMap((resp: number) => {
-            if (resp) {
-              this.productId = resp;
-              return this.http.getSingleProduct(resp);
-            }
-            return[];
-          })).subscribe((prod: any) => {
-            if (prod) {
-              this.productDetail = prod;
-              this.imageSrc = this.productDetail.image ? this.imageUrl + this.productDetail.image : '';
-              this.formInitialize();
-            }
-          })
-        } else {
-          this.productDetail = {
-            id: null,
-            image: null,
-            name: null,
-            price: null,
-            rating: null,
-            author: null,
-            description: null
-          };
-          this.imageSrc = ''
-          this.formInitialize();
+    this.subscriptionObj.add(
+      this.http.isEdit.subscribe((res: any) => {
+        if (res !== undefined) {
+          this.isEditor = res;
+          if (res) {
+            this.http.prodId.pipe(mergeMap((resp: number) => {
+              if (resp) {
+                this.productId = resp;
+                return this.http.getSingleProduct(resp);
+              }
+              return [];
+            })).subscribe((prod: any) => {
+              if (prod) {
+                this.productDetail = prod;
+                this.imageSrc = this.productDetail.image ? this.imageUrl + this.productDetail.image : '';
+                this.formInitialize();
+              }
+            })
+          } else {
+            this.productDetail = {
+              id: null,
+              image: null,
+              name: null,
+              price: null,
+              rating: null,
+              author: null,
+              description: null
+            };
+            this.imageSrc = ''
+            this.formInitialize();
+          }
         }
-      }
-    });
+      })
+    );
   }
 
   formInitialize() {
@@ -87,7 +91,7 @@ export class AddProductComponent implements OnInit {
         this.productDetail && this.productDetail?.description ? this.productDetail?.description : null,
         [Validators.required, Validators.maxLength(1100)]
       ),
-    })
+    });
   }
 
   imageUpload() {
@@ -111,8 +115,8 @@ export class AddProductComponent implements OnInit {
       const data = new FormData();
       if (this.file) {
         data.append('image', this.file);
-      } else if(!this.isEditor) {
-        this.snack.showConfirmation('Plese select an image','error');
+      } else if (!this.isEditor) {
+        this.snack.showConfirmation('Plese select an image', 'error');
       }
       data.append('name', this.productForm.get('name')?.value);
       data.append('price', this.productForm.get('price')?.value);
@@ -120,26 +124,28 @@ export class AddProductComponent implements OnInit {
       data.append('author', this.productForm.get('author')?.value);
       data.append('description', this.productForm.get('description')?.value);
       if (this.isEditor) {
-        this.http.updateProduct(this.productId, data).subscribe((res: any) => {
+        this.subscriptionObj.add(this.http.updateProduct(this.productId, data).subscribe((res: any) => {
           if (res) {
-            console.log('res...', res);
             this.productForm.reset();
             this.closeDrawer.emit();
-            this.snack.showConfirmation('Product updated successfully','success');
+            this.snack.showConfirmation('Product updated successfully', 'success');
           }
-        });
+        }));
       } else {
-        this.http.addProduct(data).subscribe((res: any) => {
+        this.subscriptionObj.add(this.http.addProduct(data).subscribe((res: any) => {
           if (res) {
-            console.log('res...', res);
             this.productForm.reset();
             this.closeDrawer.emit();
-            this.snack.showConfirmation('Product added successfully','success');
+            this.snack.showConfirmation('Product added successfully', 'success');
           }
-        });
+        }));
       }
     } else {
-      this.snack.showConfirmation('Plese fill the required field','error');
+      this.snack.showConfirmation('Plese fill the required field', 'error');
     }
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptionObj.unsubscribe();
   }
 }

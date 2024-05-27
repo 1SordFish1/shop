@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { mergeMap } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Subscription, mergeMap } from 'rxjs';
 import { Product } from 'src/app/shared/models/common.model';
 import { HttpService } from 'src/app/shared/services/http.service';
 import { environment } from 'src/environments/environment.development';
@@ -10,19 +10,20 @@ import { environment } from 'src/environments/environment.development';
   templateUrl: './details.component.html',
   styleUrl: './details.component.scss'
 })
-export class DetailsComponent implements OnInit {
+export class DetailsComponent implements OnInit, OnDestroy {
   imageUrl = environment.imageUrl;
   productDetais!: Product;
   paramId: number = 0;
   currency!: string;
 
+  subscriptionObj = new Subscription();
+
   constructor(
     private http: HttpService,
     private router: ActivatedRoute,
-    private route: Router
   ) { }
   ngOnInit(): void {
-    this.router.params.pipe(mergeMap((res: any) => {
+    this.subscriptionObj.add(this.router.params.pipe(mergeMap((res: any) => {
       if (res && res.id) {
         this.paramId = res.id
         return this.http.getSingleProduct(this.paramId)
@@ -32,11 +33,11 @@ export class DetailsComponent implements OnInit {
       if (det) {
         this.productDetais = det;
       }
-    });
+    }));
 
-    this.http.currency.subscribe((res: string) => {
+    this.subscriptionObj.add(this.http.currency.subscribe((res: string) => {
       this.currency = res;
-    });
+    }));
   }
 
   getStars(rating: number | undefined | null): string[] {
@@ -55,5 +56,9 @@ export class DetailsComponent implements OnInit {
     } else {
       return [];
     }
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptionObj.unsubscribe();
   }
 }
