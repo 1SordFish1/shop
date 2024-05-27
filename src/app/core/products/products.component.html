@@ -1,12 +1,16 @@
 <div class="product-list">
-  <ng-container *ngIf="products?.length">
+  <ng-container *ngIf="products && products?.length">
     <div class="product" *ngFor="let item of products">
-      <div class="image-card">
+      <div class="image-card" (click)="isEditor ? '' : goTo(item?.id)">
+        <div *ngIf="isEditor" class="btn-container">
+          <mat-icon (click)="editProduct(item?.id)" class="edit">edit</mat-icon>
+          <mat-icon (click)="deleteProduct(item?.id)" class="delete">delete</mat-icon>
+        </div>
         <img [src]="imageUrl + item?.image" alt="image">
       </div>
       <div class="text">
         <div class="name">{{item?.name}}</div>
-        <div class="price">$ {{item?.price}}</div>
+        <div class="price">{{item?.price | convertCurrency: currency}}</div>
       </div>
     </div>
   </ng-container>

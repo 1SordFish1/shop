@@ -1,20 +1,36 @@
 <div class="nav">
   <mat-toolbar class="tool">
     <span class="hed" routerLink="/app/home">
-      <span class="material-symbols-outlined">
+      <span class="material-symbols-outlined manga-ico">
         manga
       </span>
       <span class="heading">The Manga Shop</span>
     </span>
-    <span class="spacer"></span>
-    <button mat-icon-button class="more-icon" (click)="drawer.toggle()">
-      <mat-icon>more_vert</mat-icon>
-    </button>
+    <span Spacer></span>
+    <mat-select [formControl]="currency" class="currency"
+      matTooltip="Currency"
+      (selectionChange)="currencyChange()">
+      @for (currency of currencies; track currency) {
+        <mat-option [value]="currency?.value">{{currency?.view}}</mat-option>
+      }
+    </mat-select>
+    <mat-slide-toggle (click)="drawer.close()" (change)="toggleSlide($event)" [checked]="isChecked"
+      matTooltip="Enable edit"
+      labelPosition="before" color="primary">
+      Edit mode
+    </mat-slide-toggle>
+    <span class="material-symbols-outlined menu-ico" (click)="openAdd(drawer)"
+      matTooltip="Add product">
+      box_add
+    </span>
   </mat-toolbar>
+  <button mat-mini-fab *ngIf="drawer.opened" class="btn" color="warn" (click)="closeEditor()">
+    <mat-icon>close</mat-icon>
+  </button>
 
   <mat-drawer-container class="container" autosize>
     <mat-drawer #drawer class="sidenav" mode="side" position="end">
-      <a mat-button routerLink="/app/home">Home</a>
+      <app-add-product (closeDrawer)="drawer.close()"></app-add-product>
     </mat-drawer>
     <mat-drawer-content class="content">
       <router-outlet></router-outlet>

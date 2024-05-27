@@ -1,14 +1,31 @@
-.spacer {
-  flex: 1 1 auto;
+.nav {
+  position: relative;
+  .btn {
+    position: absolute;
+    top: 12vh;
+    right: 52vh;
+    z-index: 2;
+  }
 }
 
 .tool {
   background: none;
+  height: 10vh;
 }
 
-.material-symbols-outlined {
+.manga-ico {
   font-size: 46px;
   color: #ffff00;
+}
+
+.menu-ico {
+  font-size: 30px;
+  margin-left: 20px;
+}
+
+.menu-ico:hover {
+  cursor: pointer;
+  color: #6ac045;
 }
 
 .hed {
@@ -24,16 +41,24 @@
   font-style: normal;
 }
 
+.currency {
+  width: 140px;
+  margin-right: 20px;
+  border-bottom: gray 1px solid;
+  .mat-mdc-select-value {
+    margin-right: 5px;
+  }
+}
+
 .container {
   background: none;
 }
 
 .sidenav {
   background: none;
-  padding: 20px;
   width: 360px;
 }
 
 .content {
-  height: 91vh;
+  height: 90vh;
 }

@@ -73,3 +73,28 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(120, 120, 120, 0.7);
 }
+
+.success {
+  color: white;
+  --mdc-snackbar-container-color: green;
+}
+
+.error {
+  color: white;
+  --mdc-snackbar-container-color: #da0000;
+}
+
+.warning {
+  color: white;
+  --mdc-snackbar-container-color: #d8d800;
+}
+
+.info {
+  color: white;
+  --mdc-snackbar-container-color: #0000ca;
+}
+
+.default {
+  color: white;
+  --mdc-snackbar-container-color: gray;
+}

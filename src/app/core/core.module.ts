@@ -6,6 +6,7 @@ import { NavComponent } from './nav/nav.component';
 import { HomeComponent } from './home/home.component';
 import { ProductsComponent } from './products/products.component';
 import { DetailsComponent } from './details/details.component';
+import { AddProductComponent } from './add-product/add-product.component';
 import { PnfComponent } from './pnf/pnf.component';
 
 @NgModule({
@@ -14,7 +15,8 @@ import { PnfComponent } from './pnf/pnf.component';
     HomeComponent,
     ProductsComponent,
     DetailsComponent,
-    PnfComponent
+    AddProductComponent,
+    PnfComponent,
   ],
   imports: [
     CommonModule,

@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
 
 @Injectable({
@@ -7,6 +8,11 @@ import { environment } from 'src/environments/environment.development';
 })
 export class HttpService {
   api = environment.apiUrl;
+  isEdit: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  openEdit: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  prodId: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+  currency: BehaviorSubject<string> = new BehaviorSubject<string>('USD');
+  refresh: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   constructor(private http:HttpClient) { }
 
   getAllProducts() {

@@ -1,1 +1,20 @@
-<p>details works!</p>
+<div class="detail">
+  <div class="image-cont">
+    <img [src]="imageUrl + productDetais.image" alt="image">
+  </div>
+  <div class="details-cont">
+    <div class="name">{{productDetais.name}}</div>
+    <div class="rating">
+      <ng-container *ngFor="let star of getStars(productDetais?.rating)">
+        <mat-icon class="icon">{{star}}</mat-icon>
+      </ng-container>
+      <span>{{productDetais.rating}}</span>
+    </div>
+    <mat-divider></mat-divider>
+    <h3>{{productDetais.price | convertCurrency:currency}}</h3>
+    <mat-divider></mat-divider>
+    <div class="title"><span>Author : </span><span>{{productDetais.author}}</span></div>
+    <div class="title">Description</div>
+    <div class="descripton">{{productDetais.description}}</div>
+  </div>
+</div>
