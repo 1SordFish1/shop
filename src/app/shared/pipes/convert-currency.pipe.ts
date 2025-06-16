@@ -1,4 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
+import { CurrencyService } from '../services/currency.service';
 
 @Pipe({
   name: 'convertCurrency',
@@ -7,7 +8,9 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class ConvertCurrencyPipe implements PipeTransform {
 
-  private exchangeRates: { [key: string]: number } = {
+  constructor(private currencyService: CurrencyService) {}
+
+  private fallbackRates: { [key: string]: number } = {
     USD: 1,
     EUR: 0.92,
     GBP: 0.78,
@@ -25,7 +28,10 @@ export class ConvertCurrencyPipe implements PipeTransform {
     if (!value || isNaN(value) || value === undefined || value === null ) {
       return '';
     }
-    const convertedValue = value * (this.exchangeRates[targetCurrency] || 1);
+    const stored = this.currencyService.getStoredRates();
+    const rates = stored?.rates ?? this.fallbackRates;
+
+    const convertedValue = value * (rates[targetCurrency] || 1);
     const symbol = this.symbols[targetCurrency] || '$';
 
     return `${symbol} ${convertedValue.toFixed(2)}`;
